@@ -44,7 +44,11 @@ cd ../mariadb
 unzip $MARIADB && mv mariadb*/* . && rm -rf mariadb*
 
 ## Database
-bin/mysql_install_db --datadir "$(cygpath -aw "${BASEDIR}")\\mariadb\\db" --password "${MYPASS}"
+bin/mysql_install_db.exe --datadir db --password "${MYPASS}" # --password is windows only
+
+bin/mysqld --console &
+bin/mysqladmin create sportfest
+kill $!
  
 cat >/c/sportfest/sportfest_run.bat <<EOT
 cd /c $(cygpath -w "${BASEDIR}")
@@ -53,5 +57,11 @@ start cmd /c "cd tomcat & bin\\startup.bat"
 EOT
 
 unix2dos "${BASEDIR}"/sportfest_run.bat
+
+echo "Database host:     localhost"
+echo "Database name:     sportfest"
+echo "Database user:     root"
+echo "Database password: $MYPASS"
+echo
 
 read -p "Ready. Press enter..."
